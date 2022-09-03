@@ -266,6 +266,8 @@ function playDailyQuest(level){
                 continue reload;
             } else {
                 getMobList.push(moblist[random]);
+                console.log(moblist[random]);
+                console.log(monsterInfo2[moblist[random]]['exp'])
                 var mobinfo = {
                     "name" : moblist[random],
                     "exp"  : monsterInfo2[moblist[random]]['exp'],
