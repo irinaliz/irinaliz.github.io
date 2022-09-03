@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="https://code.jquery.com/jquery-1.12.4.min.js"></script>
+    <script src="utils.js"></script>
+    <script src="expList.js"></script>
+    <script src="MinigameExp.js"></script>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://unpkg.com/@popperjs/core@2"></script>
+    <style>
+        ul {
+            display: flex;
+            padding: 0;
+            margin: 0;
+        }
+        .li {
+            width: 50px;
+            height: 300px;
+            list-style: none;
+            position: relative;
+            display: flex;
+            justify-content: center;
+            outline: 1px solid rgb(201, 201, 201);
+        }
+        .out_div {
+            display: inline-block;
+            position: absolute;
+            bottom: 0;
+            width: 60%;
+            transform: scaleY(-1);
+        }
+        .in_div {
+            background-color: #0d6efd;
+            width: 100%;
+            border-radius: 0px 0px 4px 4px;
+            animation-name: divani;
+            animation-duration: 3s;
+            animation-fill-mode: both;
+        }
+        .div_info{
+            position: absolute;
+            top: 310px;
+            left: 5px;
+            transform: rotateZ(45deg);
+        }
+        @keyframes divani {
+            0% {
+            height: 0%;
+            }
+            100% {
+            height: 100%;
+            }
+        }
+        td:nth-child(4n-3) {
+            background-color: bisque;
+        }
+        body {
+            -webkit-user-select:none;
+            -moz-user-select:none;
+            -ms-user-select:none;
+            user-select:none
+        }
+</style>
+
+</head>
+<body style="height: 1050px;">
+    <div class="container-lg">
+        <div class="row mt-3">
+            <div class="col-2"></div>
+            <div class="col-5">
+                <div class="card">
+                    <div class="card-header">
+                        기본 정보 입력
+                    </div>
+                    <div class="form-floating">
+                        <input type="number" class="form-control" id="lvl" placeholder="Now Level" max="300" value="200">
+                        <label for="lvl">현재 레벨</label>
+                    </div>
+                    <div class="form-floating">
+                        <input type="text" class="form-control" id="exp" placeholder="Now Exp" value="0"
+                        data-bs-trigger="hover focus" data-bs-html="true" title="※ 알람" data-bs-content="소수점까지 가능하며<br>숫자만 입력해주세요."data-bs-toggle="popover">
+                        <label for="exp">현재 경험치 (%)</label>
+                    </div>
+                    <div class="form-floating">
+                        <input type="date" class="form-control" id="day" placeholder="PlayDay"
+                        data-bs-trigger="hover focus" data-bs-html="true" title="※ 주의" data-bs-content="총 진행될 일자 입니다. <br>미니게임보다 미래여야합니다."data-bs-toggle="popover">
+                        <label for="day">년월일까지 진행 - 진행일수</label>
+                    </div>
+                    <div class="form-floating">
+                        <input type="date" class="form-control" id="endDay" placeholder="endDay"
+                        data-bs-trigger="hover focus" data-bs-html="true" title="※ 주의" data-bs-content="선택한 진행일수보다 과거여야 합니다."data-bs-toggle="popover">
+                        <label for="endDay">미니게임 종료월일 - 미니게임<span style="font-size: 0.7rem!important;">(28일 23시59분까지 -> 29일 선택)</span></label>
+                    </div>
+                    <div class="form-floating">
+                        <input type="text"class="form-control" placeholder="몬스터 파크 (회)"  maxlength="1" id="monsterpark" value="0"
+                        data-bs-trigger="hover focus" data-bs-html="true" title="※ 알람" data-bs-content="최대 7회까지 가능합니다."data-bs-toggle="popover">
+                        <label for="monserpark">몬스터 파크 (회)</label>
+                    </div>
+                </div>
+                <div class="card mt-2">
+                    <div class="card-header" id="setFocusHeight"
+                    data-bs-trigger="hover focus" data-bs-html="true" title="※ 알람" data-bs-content="클릭 한 순서대로 진행됩니다.<br>경험치 획득량 차이가 결정됩니다."data-bs-toggle="popover">
+                        플레이 순서
+                    </div>
+                    <div class="form-floating">
+                        <div class="row">
+                            <div class="col-4" style="text-align: right;">
+                                <div class="form-check form-check-inline m-2 position-relative">
+                                    <input class="form-check-input playOrder" type="checkbox" id="playOrder1" value="몬스터 파크" style="display:none">
+                                    <label class="form-check-label" for="playOrder1">몬스터 파크</label>
+                                </div>
+                            </div>
+                            <div class="col-4" style="text-align: center;">
+                                <div class="form-check form-check-inline m-2 position-relative">
+                                    <input class="form-check-input playOrder" type="checkbox" id="playOrder2" value="미니게임"style="display:none">
+                                    <label class="form-check-label" for="playOrder2">미니게임</label>
+                                </div>
+                            </div>
+                            <div class="col-4" style="text-align: left;">
+                                <div class="form-check form-check-inline m-2 position-relative">
+                                    <input class="form-check-input playOrder" type="checkbox" id="playOrder3" value="일일 퀘스트"style="display:none">
+                                    <label class="form-check-label" for="playOrder3">일일 퀘스트</label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <a href="#setFocusHeight" class="btn btn-outline-primary mt-2" onclick="setGraph(calParkAndGame())">계산</a>
+            </div>
+            <div class="col-5">
+                <div class="card" style="width: 18rem;">
+                    <div class="card-header"
+                    data-bs-trigger="hover focus" data-bs-html="true" title="※ 정보"
+                    data-bs-content="진행되는 과정중<br>클리어 할 퀘스트 선택지입니다.<br><br>ex) 레헬른 체크된 상태로<br>Lv.219 -> Lv.220 레벨업 시<br>레헬른 일일 퀘스트 포함하여<br>자동 진행"data-bs-toggle="popover">
+                    일일 퀘스트
+                        <span class="form-check form-switch" style="float: right;">
+                            <input class="form-check-input" type="checkbox" role="switch" id="allCheck" checked>
+                            <label class="form-check-label" for="allCheck">ALL</label>
+                        </span>
+                    </div>
+                    <ul class="list-group list-group-flush checklist">
+                        <li class="list-group-item">
+                            <div class="form-check form-switch">
+                                <input class="form-check-input" type="checkbox" role="switch" id="q200" checked>
+                                <label class="form-check-label" for="q200"
+                                data-bs-trigger="hover focus" data-bs-html="true" title="※ 정보" data-bs-content="Exp : 372,966,000"data-bs-toggle="popover"
+                                >소멸의 여로</label>
+                            </div>
+                        </li>
+                        <li class="list-group-item">
+                            <div class="form-check form-switch">
+                                <input class="form-check-input" type="checkbox" role="switch" id="q210" checked>
+                                <label class="form-check-label" for="q210"
+                                data-bs-trigger="hover focus" data-bs-html="true" title="※ 정보" data-bs-content="Exp : 910,182,000"data-bs-toggle="popover"
+                                >츄츄 아일랜드</label>
+                            </div>
+                        </li>
+                        <li class="list-group-item">
+                            <div class="form-check form-switch">
+                                <input class="form-check-input" type="checkbox" role="switch" id="q220" checked>
+                                <label class="form-check-label" for="q220"
+                                data-bs-trigger="hover focus" data-bs-html="true" title="※ 정보" data-bs-content="Exp : 1,635,435,000"data-bs-toggle="popover"
+                                >레헬른</label>
+                            </div>
+                        </li>
+                        <li class="list-group-item">
+                            <div class="form-check form-switch">
+                                <input class="form-check-input" type="checkbox" role="switch" id="q225" checked>
+                                <label class="form-check-label" for="q225"
+                                data-bs-trigger="hover focus" data-bs-html="true" title="※ 정보" data-bs-content="Exp : 2,118,710,025"data-bs-toggle="popover"
+                                >아르카나</label>
+                            </div>
+                        </li>
+                        <li class="list-group-item">
+                            <div class="form-check form-switch">
+                                <input class="form-check-input" type="checkbox" role="switch" id="q230" checked>
+                                <label class="form-check-label" for="q230"
+                                data-bs-trigger="hover focus" data-bs-html="true" title="※ 정보" data-bs-content="Exp : 2,333,297,700"data-bs-toggle="popover"
+                                >모라스</label>
+                            </div>
+                        </li>
+                        <li class="list-group-item">
+                            <div class="form-check form-switch">
+                                <input class="form-check-input" type="checkbox" role="switch" id="q235" checked>
+                                <label class="form-check-label" for="q235"
+                                data-bs-trigger="hover focus" data-bs-html="true" title="※ 정보" data-bs-content="Exp : 2,489,474,700"data-bs-toggle="popover"
+                                >에스페라</label>
+                            </div>
+                        </li>
+                        <li class="list-group-item">
+                            <div class="form-check form-switch">
+                                <input class="form-check-input" type="checkbox" role="switch" id="q245" checked>
+                                <label class="form-check-label" for="q245"
+                                data-bs-trigger="hover focus" data-bs-html="true" title="※ 정보" data-bs-content="Exp : 5,598,365,850"data-bs-toggle="popover"
+                                >문 브릿지</label>
+                            </div>
+                        </li>
+                        <li class="list-group-item">
+                            <div class="form-check form-switch">
+                                <input class="form-check-input" type="checkbox" role="switch" id="q250" checked>
+                                <label class="form-check-label" for="q250"
+                                data-bs-trigger="hover focus" data-bs-html="true" title="※ 정보" data-bs-content="Exp : 6,036,460,000"data-bs-toggle="popover"
+                                >고통의 미궁</label>
+                            </div>
+                        </li>
+                        <li class="list-group-item">
+                            <div class="form-check form-switch">
+                                <input class="form-check-input" type="checkbox" role="switch" id="q255" checked>
+                                <label class="form-check-label" for="q255"
+                                data-bs-trigger="hover focus" data-bs-html="true" title="※ 정보" data-bs-content="Exp : 6,391,068,550"data-bs-toggle="popover"
+                                >리멘</label>
+                            </div>
+                        </li>
+                        <li class="list-group-item">
+                            <div class="form-check form-switch">
+                                <input class="form-check-input" type="checkbox" role="switch" id="q260" checked>
+                                <label class="form-check-label" for="q260"
+                                data-bs-trigger="hover focus" data-bs-html="true" title="※ 정보" data-bs-content="Exp : 13,713,068,400"data-bs-toggle="popover"
+                                >세르니움</label>
+                            </div>
+                        </li>
+                        <li class="list-group-item">
+                            <div class="form-check form-switch">
+                                <input class="form-check-input" type="checkbox" role="switch" id="q265" checked>
+                                <label class="form-check-label" for="q265"
+                                data-bs-trigger="hover focus" data-bs-html="true" title="※ 정보" data-bs-content="Exp : 14,350,209,192"data-bs-toggle="popover"
+                                >불타는 세르니움</label>
+                            </div>
+                        </li>
+                        <li class="list-group-item">
+                            <div class="form-check form-switch">
+                                <input class="form-check-input" type="checkbox" role="switch" id="q270" checked>
+                                <label class="form-check-label" for="q270"
+                                data-bs-trigger="hover focus" data-bs-html="true" title="※ 정보" data-bs-content="Exp : 19,371,792,600"data-bs-toggle="popover"
+                                >호텔 아르크스</label>
+                            </div>
+                        </li>
+                        <li class="list-group-item">
+                            <div class="form-check form-switch">
+                                <input class="form-check-input" type="checkbox" role="switch" id="q275" checked>
+                                <label class="form-check-label" for="q275"
+                                data-bs-trigger="hover focus" data-bs-html="true" title="※ 정보" data-bs-content="Exp : 32,127,015,480"data-bs-toggle="popover"
+                                >오디움</label>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <div class="row mt-3">
+            <div class="col-2"></div>
+            <div class="col-8" style="width:65.34%">
+                <div class="card">
+                    <div class="card-header" id="result_header">
+                        결과
+                    </div>
+                    <div style="overflow: scroll;" id="parent_ul_div">
+                        <ul id="parent_ul">
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <div class="col-2"></div>
+        </div>
+    </div>
+
+</body>
+<script>
+    var playOrderList = new Array();
+    var maxWidth = 0;
+    $(function(){
+
+        var popoverTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="popover"]'))
+        var popoverList = popoverTriggerList.map(function (popoverTriggerEl) {
+            return new bootstrap.Popover(popoverTriggerEl)
+        })
+        $("#allCheck").change(function(){
+            allCheck();
+        })
+        $("#lvl").change(function(){
+        })
+
+        $(".playOrder").change(function(){
+            if($(this).prop("checked")){
+                playOrderList.push($(this).val());
+            } else {
+                playOrderList = playOrderList.filter((value) => value !== $(this).val());
+            }
+            var form = "";
+            $.each($(".playOrder"),function (idx,value){
+                var text = $(value).val();
+                var id = $(value).attr("id");
+                if(playOrderList.includes(text)){
+                    var left = (text == "미니게임") ? "10%":"10%" //"116%" : "113%";
+                    form = `<span class="position-absolute translate-middle badge rounded-pill bg-secondary" style="left:${left} !important; top:12px!important;">
+                                ${playOrderList.indexOf(text)+1}
+                            </span>`;
+                } else {
+                    form = "";
+                }
+                $(`label[for="${id}"]`).html(`${text} ${form}`);
+            })
+        })
+        var handleEvent = function(e) {
+            e.preventDefault();      // disables scrolling by mouse wheel and touch move
+            if(e.deltaY >= 1){
+                if(parent_ul_div.scrollLeft <= maxWidth){
+                    parent_ul_div.scrollTo(parent_ul_div.scrollLeft+50, 0);
+                }
+            } else {
+                if(parent_ul_div.scrollLeft >= 0){
+                    parent_ul_div.scrollTo(parent_ul_div.scrollLeft-50, 0);
+                }
+            }
+        };
+            
+        //parent_ul_div.addEventListener('scroll', handleEvent, false);
+        parent_ul_div.addEventListener('wheel', handleEvent, false);
+        parent_ul_div.addEventListener('touchmove', handleEvent, false);
+    })
+</script>
+</html>
