@@ -82,6 +82,30 @@ function calParkAndGame() {
                     })
                 }
             }
+            if(playType[typePlay] == "익스트림 몬파"){
+                if(level >= 260) {
+                    console.log(`${i+1}일차 익스트림 몬스터 파크 진행`)
+                    var exMExp = getExtreamExp(level,hasSunday,hasSundayEvent);
+                    oldExp += (exMExp.exp + exMExp.plusExp);
+                    if(oldExp >= lvreqExp){
+                        lvlUpCnt++;
+                        oldExp = oldExp - lvreqExp;
+                    }
+                    level = oldLevel + lvlUpCnt;
+                    lvlExpObjectInfo.push({
+                        'playType' : 'extream',
+                        'level' : level,
+                        'exp' : Number((oldExp / reqExp[level]) * 100).toLocaleString("ko")+"%",
+                        'clearExp' : (exMExp.exp),
+                        'clearPlusExp' : (exMExp.plusExp),
+                        'clearTotal' : (exMExp.exp+exMExp.plusExp),
+                        'clearDay' : getDay(newDate.getDay()),
+                        'clearDate' : `${newDate.getFullYear()}-${newDate.getMonth()+1}-${newDate.getDate()}`
+                    })
+                } else {
+                    console.log(`${i+1}일차 익스트림 몬스터 파크 진행불가 - Level : ${level}`)
+                }
+            }
 
             if(playType[typePlay] == "일일 퀘스트"){
                 console.log(`${i+1}일차 일일 퀘스트 진행`)
@@ -98,6 +122,7 @@ function calParkAndGame() {
                         }
                     }
                     level = oldLevel + lvlUpCnt;
+
                     lvreqExp = reqExp[level];
                     oldExp += getDailyQuestExp(Number( forCnt[questidx]))
                     if(oldExp >= lvreqExp){
@@ -106,6 +131,7 @@ function calParkAndGame() {
                         if(false) {lvlUpCnt++; lvlUpCnt++; }
                     }
                     level = oldLevel + lvlUpCnt;
+
                     lvlExpObjectInfo.push({
                         'playType' : 'quest',
                         'level' : level,
@@ -126,6 +152,7 @@ function calParkAndGame() {
     return lvlExpObjectInfo;
 }
 function setGraph(arr){
+    if(arr == null || arr.length == 0) return false;
     if((typeof arr) != 'object') return false;
 
     var playDay = new Date($("#day").val())//Number($("#day").val());
@@ -149,6 +176,21 @@ function setGraph(arr){
                     <li class='list-group-item'>요일 : ${arr[i].clearDay}</li>
                     <li class='list-group-item'>마을 : ${arr[i].clearMonsterParkName}</li>
                     <li class='list-group-item'>획득 : ${Number(arr[i].clearExp).toLocaleString("ko")}</li>
+                    <li class='list-group-item'>경험치 : ${arr[i].exp}</li>
+                </ul>
+            </div>
+            `;
+        }
+        if(arr[i].playType == 'extream'){
+            title = "익스트림 몬스터 파크";
+            description = 
+            `<div class='card' style='width: 18rem;'>
+                <ul class='list-group list-group-flush'>
+                    <li class='list-group-item'>일자 : ${arr[i].clearDate}</li>
+                    <li class='list-group-item'>요일 : ${arr[i].clearDay}</li>
+                    <li class='list-group-item'>획득 : ${Number(arr[i].clearExp).toLocaleString("ko")}</li>
+                    ${arr[i].clearPlusExp == 0 ? `` : `<li class='list-group-item'>추가 획득 : ${Number(arr[i].clearPlusExp).toLocaleString("ko")}</li>`}
+                    <li class='list-group-item'>총 획득 : ${Number(arr[i].clearTotal).toLocaleString("ko")}</li>
                     <li class='list-group-item'>경험치 : ${arr[i].exp}</li>
                 </ul>
             </div>
